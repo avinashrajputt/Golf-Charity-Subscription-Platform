@@ -39,7 +39,7 @@ export default function SignInPage() {
         name: data.name,
         role: data.role,
         subscription_status: data.subscription_status,
-        created_at: new Date(),
+        created_at: new Date().toISOString(),
       });
 
       // Redirect based on role
