@@ -49,9 +49,9 @@ export default function AdminCharitiesPage() {
         ...formData,
         total_raised: 0,
         featured: false,
-        created_at: new Date(),
-        updated_at: new Date(),
-      };
+        events: [],
+        created_at: new Date().toISOString(),
+      } as Charity;
 
       setCharities([...charities, newCharity]);
       setFormData({ name: '', description: '', logo_url: '', website: '' });
