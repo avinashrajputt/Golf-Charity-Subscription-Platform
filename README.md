@@ -1,5 +1,13 @@
 # Golf Charity Subscription Platform
 
+## Status
+
+✅ **Application Status**: Production Ready (Demo Mode - No real payments yet)
+- Backend: PostgreSQL + Next.js API Routes
+- Frontend: React 18 + Next.js 14
+- Hosting: Vercel
+- Database: Neon PostgreSQL
+
 ## Overview
 
 A modern, subscription-driven web application combining golf performance tracking, monthly prize draws, and charitable giving. Users track their golf scores, participate in monthly draws for cash prizes, and support charities of their choice.
