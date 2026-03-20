@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
 
     // Find user by email
     const userResult = await client.query(
-      'SELECT id, email, password_hash, full_name, role, subscription_status, charity_percentage, created_at, updated_at FROM users WHERE email = $1',
+      'SELECT id, email, password_hash, full_name, role, subscription_status, created_at, updated_at FROM users WHERE email = $1',
       [email]
     );
 
