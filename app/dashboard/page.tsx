@@ -39,22 +39,19 @@ export default function UserDashboard() {
 
     setSubmitting(true);
     try {
-      const { data, error } = await supabase
-        .from('golf_scores')
-        .insert([
-          {
-            user_id: user.id,
-            score: scoreNum,
-            date: scoreDate,
-          },
-        ])
-        .select();
+      // Demo mode: Just add to local state
+      const newScoreObj = {
+        id: `score_${Date.now()}`,
+        user_id: user.id,
+        score: scoreNum,
+        date: scoreDate,
+        created_at: new Date().toISOString(),
+      };
 
-      if (error) throw error;
-
-      setScores([...scores, data[0]]);
+      setScores([...scores, newScoreObj]);
       setNewScore('');
       setScoreDate(new Date().toISOString().split('T')[0]);
+      alert('Score added successfully (demo mode)');
     } catch (error) {
       console.error('Error adding score:', error);
       alert('Failed to add score');
