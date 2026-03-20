@@ -24,9 +24,10 @@ export default function AdminCharitiesPage() {
       return;
     }
 
-    setCharities([]);
-    setLoading(false);
-  }, [user, router]);
+    const fetchCharities = async () => {
+      try {
+        const response = await fetch('/api/charities');
+        const data = await response.json();
         setCharities(data || []);
       } catch (error) {
         console.error('Error fetching charities:', error);
@@ -41,16 +42,21 @@ export default function AdminCharitiesPage() {
   const handleAddCharity = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const { data, error } = await supabase
-        .from('charities')
-        .insert([formData])
-        .select();
+      // Demo mode: Just add to local state
+      // In production, call an API to save to database
+      const newCharity = {
+        id: `charity_${Date.now()}`,
+        ...formData,
+        total_raised: 0,
+        featured: false,
+        created_at: new Date(),
+        updated_at: new Date(),
+      };
 
-      if (error) throw error;
-
-      setCharities([...charities, data[0]]);
+      setCharities([...charities, newCharity]);
       setFormData({ name: '', description: '', logo_url: '', website: '' });
       setShowForm(false);
+      alert('Charity added successfully (demo mode)');
     } catch (error) {
       console.error('Error adding charity:', error);
       alert('Failed to add charity');

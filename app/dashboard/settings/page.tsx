@@ -23,9 +23,16 @@ export default function DashboardSettingsPage() {
       return;
     }
 
-    setCharities([]);
-    setLoading(false);
-  }, [user, router]);
+    const fetchCharities = async () => {
+      try {
+        const response = await fetch('/api/charities');
+        const data = await response.json();
+        setCharities(data || []);
+      } catch (error) {
+        console.error('Error fetching charities:', error);
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchCharities();
@@ -37,18 +44,8 @@ export default function DashboardSettingsPage() {
 
     setSaving(true);
     try {
-      const { error } = await supabase
-        .from('users')
-        .update({
-          name,
-          charity_id: selectedCharity,
-          charity_percentage: charityPercent,
-        })
-        .eq('id', user.id);
-
-      if (error) throw error;
-
-      // Update store
+      // Demo mode: Just update the store
+      // In production, call an API to save to database
       setUser({
         ...user,
         name,

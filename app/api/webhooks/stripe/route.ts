@@ -1,47 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
-import Stripe from 'stripe';
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.text();
-    const signature = request.headers.get('stripe-signature');
+    const body = await request.json();
 
-    if (!signature) {
-      return NextResponse.json(
-        { error: 'Missing signature' },
-        { status: 400 }
-      );
-    }
+    // DEMO MODE: Process webhook in demo mode
+    // In production, verify the signature with Stripe
+    
+    console.log('Webhook received:', body.type);
 
-    let event;
-    try {
-      event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
-    } catch (err: any) {
-      return NextResponse.json(
-        { error: `Webhook verification failed: ${err.message}` },
-        { status: 400 }
-      );
-    }
+    // TODO: Implement actual Stripe webhook processing when Stripe keys are available
+    // Required events to handle:
+    // - checkout.session.completed: Create subscription record
+    // - customer.subscription.updated: Update subscription status
+    // - customer.subscription.deleted: Cancel subscription
 
-    switch (event.type) {
-      case 'checkout.session.completed':
-        await handleCheckoutCompleted(event.data.object as Stripe.Checkout.Session);
-        break;
-
-      case 'customer.subscription.updated':
-        await handleSubscriptionUpdated(event.data.object as Stripe.Subscription);
-        break;
-
-      case 'customer.subscription.deleted':
-        await handleSubscriptionCancelled(event.data.object as Stripe.Subscription);
-        break;
-    }
-
-    return NextResponse.json({ received: true });
+    return NextResponse.json({ received: true, mode: 'demo' });
   } catch (error: any) {
+    console.error('Webhook error:', error);
     return NextResponse.json(
       { error: error.message },
       { status: 500 }

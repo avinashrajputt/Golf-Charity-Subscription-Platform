@@ -3,7 +3,11 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/lib/store';
-import { PRICING, createCheckoutSession, getStripe } from '@/lib/stripe';
+
+const PRICING = {
+  monthly: 9.99,
+  yearly: 99.99,
+};
 
 export default function SubscriptionPlanPage() {
   const router = useRouter();
@@ -16,21 +20,31 @@ export default function SubscriptionPlanPage() {
     setLoading(true);
 
     try {
-      if (user) {
-        const { sessionId } = await createCheckoutSession(plan);
-        const stripe = await getStripe();
-        
-        if (!stripe) throw new Error('Stripe failed to load');
-        
-        const { error } = await stripe.redirectToCheckout({ sessionId });
-        if (error) throw error;
-      } else {
+      if (!user) {
         alert('Please sign up first to continue with your subscription');
         router.push('/auth/signup');
+        return;
       }
-    } catch (error) {
+
+      // Call the checkout API
+      const response = await fetch('/api/create-checkout-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ planType: plan }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to create checkout session');
+      }
+
+      // Demo mode - show success message and redirect
+      alert(`✅ Plan Selected: ${plan === 'monthly' ? 'Monthly' : 'Annual'}\n\nIn demo mode. Add Stripe keys to enable real payments.\n\nRedirecting to dashboard...`);
+      router.push('/dashboard');
+    } catch (error: any) {
       console.error('Error:', error);
-      alert('Failed to initiate checkout. Please try again.');
+      alert('Checkout error: ' + (error.message || 'Please try again'));
       setLoading(false);
       setSelectedPlan(null);
     }
