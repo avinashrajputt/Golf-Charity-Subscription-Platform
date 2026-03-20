@@ -55,13 +55,13 @@ export default function DashboardDrawsPage() {
                     <div className="flex justify-between items-start mb-4">
                       <div>
                         <h3 className="text-lg font-bold">
-                          {new Date(draw.year, draw.month - 1).toLocaleDateString('en-US', {
+                          {new Date(Number(draw.year), Number(draw.month) - 1).toLocaleDateString('en-US', {
                             month: 'long',
                             year: 'numeric',
                           })}
                         </h3>
                         <p className="text-gray-400 text-sm mt-1">
-                          Numbers: {draw.drawn_numbers.join(', ')}
+                          Numbers: {(draw.drawn_numbers as any[]).join(', ')}
                         </p>
                       </div>
                       <span className="px-3 py-1 bg-success/20 text-success text-xs font-bold rounded">
