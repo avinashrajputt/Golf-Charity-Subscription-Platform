@@ -46,6 +46,14 @@ export async function POST(request: NextRequest) {
     }
 
     // Return user data (without password hash)
+    const createdAt = user.created_at instanceof Date 
+      ? user.created_at.toISOString() 
+      : (typeof user.created_at === 'string' ? user.created_at : new Date().toISOString());
+    
+    const updatedAt = user.updated_at instanceof Date 
+      ? user.updated_at.toISOString() 
+      : (typeof user.updated_at === 'string' ? user.updated_at : new Date().toISOString());
+
     return NextResponse.json({
       id: user.id,
       email: user.email,
@@ -53,13 +61,13 @@ export async function POST(request: NextRequest) {
       role: user.role,
       subscription_status: user.subscription_status,
       charity_percentage: user.charity_percentage || 50,
-      created_at: user.created_at?.toISOString?.() || new Date().toISOString(),
-      updated_at: user.updated_at?.toISOString?.() || new Date().toISOString(),
+      created_at: createdAt,
+      updated_at: updatedAt,
     });
   } catch (error) {
     console.error('Sign in error:', error);
     return NextResponse.json(
-      { error: 'Sign in failed' },
+      { error: 'Sign in failed: ' + (error instanceof Error ? error.message : 'Unknown error') },
       { status: 500 }
     );
   } finally {
