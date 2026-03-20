@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
 
     // Find user by email
     const userResult = await client.query(
-      'SELECT id, email, password_hash, full_name, role, subscription_status FROM users WHERE email = $1',
+      'SELECT id, email, password_hash, full_name, role, subscription_status, charity_percentage, created_at, updated_at FROM users WHERE email = $1',
       [email]
     );
 
@@ -52,7 +52,9 @@ export async function POST(request: NextRequest) {
       name: user.full_name,
       role: user.role,
       subscription_status: user.subscription_status,
-      created_at: new Date(),
+      charity_percentage: user.charity_percentage || 50,
+      created_at: user.created_at?.toISOString?.() || new Date().toISOString(),
+      updated_at: user.updated_at?.toISOString?.() || new Date().toISOString(),
     });
   } catch (error) {
     console.error('Sign in error:', error);
