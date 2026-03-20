@@ -32,8 +32,10 @@ export default function SignUpPage() {
         email,
         name: name || 'Golf Player',
         role: 'subscriber',
-        subscription_status: 'pending',
-        created_at: new Date(),
+        subscription_status: 'inactive',
+        charity_percentage: 50,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
       });
       router.push('/onboarding/charity');
     } catch (err: any) {
